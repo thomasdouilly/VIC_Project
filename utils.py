@@ -7,16 +7,15 @@ import xml.etree.ElementTree as ET
 
 def load_pictures():
     
-    data = []
+    pictures_dic = {}
     files = os.listdir('./data/images')
     
     for file in files:
         picture = Image.open('./data/images/' + file)
         picture = np.array(picture)
-        picture = np.expand_dims(picture, 0)
-        data.append(picture)
+        pictures_dic[file] = picture
         
-    return data
+    return pictures_dic
 
 def load_annotations():
     
@@ -41,6 +40,21 @@ def load_annotations():
         annotations_dic[name] = features
     
     return annotations_dic
-    
-print(load_annotations())
 
+def load_data():
+    pictures = load_pictures()
+    annotations = load_annotations()
+
+    ids = pictures.keys()
+    data = {}
+
+    for id in ids:
+        picture = pictures[id]
+        category = annotations[id]['category']
+        (y_min, x_min, y_max, x_max) = annotations[id]['box']
+
+        sign = picture[x_min : x_max + 1, y_min : y_max + 1]
+        
+        data[id] = {"category" : category, "picture" : sign}  
+    
+    return data
