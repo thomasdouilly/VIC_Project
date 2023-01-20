@@ -58,3 +58,34 @@ def load_data():
         data[id] = {"category" : category, "picture" : sign}  
     
     return data
+
+def load_and_split_data(p_train = 0.7):
+    
+    data = load_data()
+    N = len(data)
+    N_train = int(p_train * N)
+    
+    files = np.array(os.listdir('./data/annotations'))*
+    np.random.shuffle(files)
+    
+    data_train = {}
+    data_test = {}
+    
+    for i in range(N):
+        file = files[i]
+        if i < N_train:
+            data_train[file] = data[file]
+        else:
+            data_test[file] = data[file]
+
+    return data_train, data_test
+
+
+def normalize_rows(mat):
+    
+    for i in range(len(mat)):
+        norm = np.linalg.norm(mat[i, :])
+        if norm != 0:
+            mat[i, :] /= norm
+    
+    return mat
