@@ -6,6 +6,10 @@ import xml.etree.ElementTree as ET
 
 
 def load_pictures():
+    """
+    input : rien
+    output : dictionnaire avec clé = picture_filename, valeur = picture
+    """
     
     pictures_dic = {}
     files = os.listdir('./data/images')
@@ -18,7 +22,10 @@ def load_pictures():
     return pictures_dic
 
 def load_annotations():
-    
+    """
+    input : rien
+    output : dictionnaire avec clé = picture_filename, valeur = {category, boxes}
+    """
     annotations_dic = {}
     files = os.listdir('./data/annotations')
     
@@ -42,6 +49,10 @@ def load_annotations():
     return annotations_dic
 
 def load_data():
+    """
+    input : rien
+    output : dictionnaire avec clé = picture_filename, valeur = {category, cropped_picture}
+    """
     pictures = load_pictures()
     annotations = load_annotations()
 
