@@ -8,7 +8,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import confusion_matrix
 import operator as op
 
-def get_histo(pictures):
+def get_histo_sift(pictures):
     
     i = 0
     des_list = []
@@ -58,8 +58,8 @@ def get_opencv_sift_model(train_pic, test_pic, neighbors):
     
     neighbors_instance = KNeighborsClassifier(n_neighbors = neighbors)
     
-    histo_train, categories_train = get_histo(train_pic)
-    histo_test, categories_test = get_histo(test_pic)
+    histo_train, categories_train = get_histo_sift(train_pic)
+    histo_test, categories_test = get_histo_sift(test_pic)
     print("Model processing")
     neighbors_instance.fit(histo_train, categories_train)
     score = round(100 * neighbors_instance.score(histo_test, categories_test), 1)
