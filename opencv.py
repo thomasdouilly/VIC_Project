@@ -5,19 +5,19 @@ import matplotlib.pyplot as plt
 import cv2
 from sklearn.cluster import KMeans
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import confusion_matrix
 import operator as op
 
-
-pictures = utils.load_data()
 def get_histo(pictures):
     
     i = 0
     des_list = []
+    category = []
     ref_index = [0]
 
     for key in pictures.keys():
         pictures[key]['picture'] = cv2.cvtColor(pictures[key]['picture'], cv2.COLOR_RGB2GRAY)
-
+        category.append(pictures[key]['category'])
         sift_instance = cv2.SIFT_create()
         kp, des = sift_instance.detectAndCompute(pictures[key]['picture'],None)
 
@@ -36,7 +36,7 @@ def get_histo(pictures):
     kmeans_instance = KMeans()
     labels = kmeans_instance.fit(des_list).labels_
 
-    histo = np.zeros((len(ref_index), 8))
+    histo = np.zeros((len(ref_index) - 1, 8))
 
     for i in range(len(ref_index) - 1):
         a, b = ref_index[i], ref_index[i + 1]
@@ -46,5 +46,22 @@ def get_histo(pictures):
             
     histo = utils.normalize_rows(histo)
 
-    return histo
-neighbors_instance = KNeighborsClassifier(n_neighbors = 1)
+    return histo, np.array(category)
+
+
+
+def get_opencv_sift_model(img):
+    
+    neighbors_instance = KNeighborsClassifier(n_neighbors = 1)
+
+    train_pic, test_pic = utils.load_and_split_data(0.6)
+
+    histo_train, categories_train = get_histo(train_pic)
+    histo_test, categories_test = get_histo(test_pic)
+    print("Model processing")
+    neighbors_instance.fit(histo_train, categories_train)
+    print("Score on testing dataset  :", round(100 * neighbors_instance.score(histo_test, categories_test), 1), "%")
+    preds = neighbors_instance.predict(histo_test)
+    print("Confusion matrix :")
+    print(confusion_matrix(categories_test, preds))
+        

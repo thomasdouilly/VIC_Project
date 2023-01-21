@@ -42,12 +42,14 @@ def load_annotations():
     return annotations_dic
 
 def load_data():
+    print('Data Loading.......')
     pictures = load_pictures()
     annotations = load_annotations()
 
     ids = pictures.keys()
     data = {}
 
+    print('Data Reshaping.......')
     for id in ids:
         picture = pictures[id]
         category = annotations[id]['category']
@@ -57,6 +59,16 @@ def load_data():
         
         data[id] = {"category" : category, "picture" : sign}  
     
+    app_dict = {}
+
+    for x in data.keys():
+        try:
+            app_dict[data[x]['category']] += 1
+        except:
+            app_dict[data[x]['category']] = 1
+        
+    print('Loaded Data Categories :', app_dict)
+    
     return data
 
 def load_and_split_data(p_train = 0.7):
@@ -65,7 +77,7 @@ def load_and_split_data(p_train = 0.7):
     N = len(data)
     N_train = int(p_train * N)
     
-    files = np.array(os.listdir('./data/annotations'))*
+    files = np.array(os.listdir('./data/annotations'))
     np.random.shuffle(files)
     
     data_train = {}
@@ -73,10 +85,11 @@ def load_and_split_data(p_train = 0.7):
     
     for i in range(N):
         file = files[i]
+        name = file.split('.')[0] + '.png'
         if i < N_train:
-            data_train[file] = data[file]
+            data_train[name] = data[name]
         else:
-            data_test[file] = data[file]
+            data_test[name] = data[name]
 
     return data_train, data_test
 
