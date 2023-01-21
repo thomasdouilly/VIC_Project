@@ -16,7 +16,11 @@ def get_histo(pictures):
     ref_index = [0]
 
     for key in pictures.keys():
-        pictures[key]['picture'] = cv2.cvtColor(pictures[key]['picture'], cv2.COLOR_RGB2GRAY)
+        try:
+            pictures[key]['picture'] = cv2.cvtColor(pictures[key]['picture'], cv2.COLOR_RGB2GRAY)
+        except:
+            0
+            
         category.append(pictures[key]['category'])
         sift_instance = cv2.SIFT_create()
         kp, des = sift_instance.detectAndCompute(pictures[key]['picture'],None)
@@ -50,18 +54,18 @@ def get_histo(pictures):
 
 
 
-def get_opencv_sift_model(img):
+def get_opencv_sift_model(train_pic, test_pic, neighbors):
     
-    neighbors_instance = KNeighborsClassifier(n_neighbors = 1)
-
-    train_pic, test_pic = utils.load_and_split_data(0.6)
-
+    neighbors_instance = KNeighborsClassifier(n_neighbors = neighbors)
+    
     histo_train, categories_train = get_histo(train_pic)
     histo_test, categories_test = get_histo(test_pic)
     print("Model processing")
     neighbors_instance.fit(histo_train, categories_train)
-    print("Score on testing dataset  :", round(100 * neighbors_instance.score(histo_test, categories_test), 1), "%")
+    score = round(100 * neighbors_instance.score(histo_test, categories_test), 1)
+    print("Score on testing dataset  :", score, "%")
     preds = neighbors_instance.predict(histo_test)
     print("Confusion matrix :")
     print(confusion_matrix(categories_test, preds))
+    return score
         
