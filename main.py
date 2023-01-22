@@ -4,6 +4,7 @@ import opencv
 
 train_pic, test_pic = utils.load_and_split_data(0.8)
 opencv.get_opencv_sift_model(train_pic, test_pic, 2)
+opencv.get_opencv_surf_model(train_pic, test_pic, 2)
 
 """
 score_list = []
