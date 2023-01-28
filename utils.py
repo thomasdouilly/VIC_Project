@@ -41,7 +41,7 @@ def load_annotations():
     
     return annotations_dic
 
-def load_data():
+def load_data(test = 0):
     print('Data Loading.......')
     pictures = load_pictures()
     annotations = load_annotations()
@@ -54,9 +54,12 @@ def load_data():
         picture = pictures[id]
         category = annotations[id]['category']
         (y_min, x_min, y_max, x_max) = annotations[id]['box']
-
-        sign = picture[x_min : x_max + 1, y_min : y_max + 1]
         
+        if not test:
+            sign = picture[x_min : x_max + 1, y_min : y_max + 1]
+        else:
+            sign = picture
+            
         data[id] = {"category" : category, "picture" : sign}  
     
     app_dict = {}
