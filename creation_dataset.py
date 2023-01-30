@@ -1,4 +1,4 @@
-from utils import load_data, load_pictures
+from utils import load_data, load_annotations
 import shutil
 import random
 from PIL import Image
@@ -91,4 +91,26 @@ def keep_random_speedlimit():
 
     return "Done"
 
-keep_random_speedlimit()
+#keep_random_speedlimit()
+
+def prepa_neg_trainer():
+    with open('./data/crosswalksCSCTrainer/negative/neg.txt', 'w') as f:
+        for filename in os.listdir("./data/crosswalksCSCTrainer/negative"):
+            f.write('negative/'+filename+"\n")
+
+#prepa_neg_trainer()
+
+def prepa_pos_trainer():
+    annotations = load_annotations()
+    keys = list(annotations.keys())[0]
+    with open('./data/crosswalksCSCTrainer/positive/pos.txt', 'w') as f:
+        for filename in os.listdir("./data/crosswalksCSCTrainer/positive"):
+            if filename != "pos.txt" :
+                annotation = annotations[filename]['box']
+                length = len(annotation)//4
+                txt = ""
+                for i in annotation:
+                    txt += str(i)+" "
+                f.write('positive/'+filename+"  "+str(length)+"  "+txt+"\n")
+
+#prepa_pos_trainer()
