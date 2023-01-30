@@ -6,6 +6,9 @@ import cv2
 
 
 def find_extrema(D_pyramid, threshold):
+    
+    """Input : a DoG pyramid and a threshold (float)
+        Returns : the list of keypoints"""
     point_list = []
     
     N_octave = len(D_pyramid)
@@ -38,12 +41,17 @@ def find_extrema(D_pyramid, threshold):
     return point_list
 
 
-def sift(img, sigma, threshold_extrema, interpol_iter):
+def sift(img, sigma, threshold_extrema):
+
+    """Inputs : the link of a picture from the dataset (string), a std value (float) and a threshold value (float)"""
     
+    
+    # Picture importation
     img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
 
-    k = 2
-    N = 5
+    # Parameters
+    k = 2 
+    N = 5 # Size of the DoG
     M = 3
 
     D_pyramid = []
@@ -71,63 +79,5 @@ def sift(img, sigma, threshold_extrema, interpol_iter):
         D_pyramid.append(D_octave)
 
     extrema = find_extrema(D_pyramid, threshold_extrema)
-    features = []
-    
-    for k in range(M):
-        
-        keypoints = []
-        derive_z, derive_x, derive_y = np.gradient(D_pyramid[k])
-    
-        derive_zz, derive_zx, derive_zy = np.gradient(derive_z)
-        derive_xz, derive_xx, derive_xy = np.gradient(derive_x)
-        derive_yz, derive_yx, derive_yy = np.gradient(derive_y)
-        
-        jacob = np.array([derive_z, derive_x, derive_y])
-        hessian = np.array([derive_zz, derive_zx, derive_zy, derive_xz, derive_xx, derive_xy, derive_yz, derive_yx, derive_yy])
-        
-        extrema_list = extrema[k]
-        """
-        for (x_extremum, y_extremum, n_pic, value) in extrema_list:
-            for _ in range(interpol_iter):
-                x_extremum = int(x_extremum)
-                y_extremum = int(y_extremum)
-                n_pic = int(n_pic)
-                
-                derive_at_extremum = jacob[:, n_pic, x_extremum, y_extremum]
-                second_derive_at_extremum = hessian[:, n_pic, x_extremum, y_extremum].reshape((3,3))
-                inv = np.linalg.pinv(second_derive_at_extremum)
-                
-                offset = -np.dot(inv, derive_at_extremum)
-                val_change = (1 / 2) * np.dot(derive_at_extremum, offset)
-                
-                print((x_extremum, y_extremum, n_pic, value))
-                value += val_change
-                (x_extremum, y_extremum, n_pic) = (x_extremum + offset[1], y_extremum + offset[2], n_pic + offset[0])
-                print((x_extremum, y_extremum, n_pic, value))
-                
-                if abs(value) > (threshold_extrema * 0.85):
-                    x_extremum = int(x_extremum)
-                    y_extremum = int(y_extremum)
-                    n_pic = int(n_pic)
-                    if True:
-                        keypoints.append((x_extremum, y_extremum, n_pic))
-        features += keypoints
-        """
-    return D_pyramid, keypoints
-
-import matplotlib.pyplot as plt
-picture = utils.load_data()['road1.png']['picture']
-G, extrema = sift(picture, 1.6, 10, 2)
-list_x = []
-
-N = 5
-M = 3
-fig, axs = plt.subplots(M, N)
-for i in range(N):
-    for j in range(M):
-        axs[j, i].imshow(G[j][i])
-        axs[j, i].title.set_text('DoG at octave {} with i = {}'.format(j, i))
-
-plt.show()
-
-print(extrema)
+  
+    return D_pyramid, extrema
