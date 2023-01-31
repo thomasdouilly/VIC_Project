@@ -16,11 +16,14 @@ from sklearn.neighbors import KNeighborsClassifier
 
 
 def hasard():
+    """
+    return the 10 first image with object detected of speedlimitClassifier
+    """
     box = ()
     made = 0
     i=0
     names = os.listdir('./data/images')
-    classifier = cv2.CascadeClassifier(r"C:\Users\antoi\OneDrive\Bureau\CS\3A\SDI\VIC\Project\git\VIC_Project\data\speedlimitXML\classifier\cascade.xml")
+    classifier = cv2.CascadeClassifier("./data/speedlimitXML/classifier/cascade.xml")
     L = len(names)
     while made<10:
         name = names[i]
@@ -41,7 +44,10 @@ def hasard():
     return "Done"
 
 def choix(i):
-    classifier = cv2.CascadeClassifier(r"C:\Users\antoi\OneDrive\Bureau\CS\3A\SDI\VIC\Project\git\VIC_Project\data\speedlimitXML\classifier\cascade.xml")
+    """
+    return only a specified element of index i
+    """
+    classifier = cv2.CascadeClassifier("./data/speedlimitXML/classifier/cascade.xml")
     #names = os.listdir('./data/images')
     #name = names[i]
     name = "road110.png"
@@ -63,12 +69,17 @@ hasard()
 #choix(1)
 
 def classification_test(folder, name):
+    """
+    compute the test on the image of the folder
+    return the predicted class, decided with the number of boxes detected
+    in case of equality between classes, the choice is done randomly
+    """
     classif = {}
 
-    classifierCW = cv2.CascadeClassifier(r"C:\Users\antoi\OneDrive\Bureau\CS\3A\SDI\VIC\Project\git\VIC_Project\data\crosswalksXML\classifier\cascade.xml")
-    classifierSL = cv2.CascadeClassifier(r"C:\Users\antoi\OneDrive\Bureau\CS\3A\SDI\VIC\Project\git\VIC_Project\data\speedlimitXML\classifier\cascade.xml")
-    classifierST = cv2.CascadeClassifier(r"C:\Users\antoi\OneDrive\Bureau\CS\3A\SDI\VIC\Project\git\VIC_Project\data\stopXML\classifier\cascade.xml")
-    classifierTL = cv2.CascadeClassifier(r"C:\Users\antoi\OneDrive\Bureau\CS\3A\SDI\VIC\Project\git\VIC_Project\data\trafficlightsXML\classifier\cascade.xml")
+    classifierCW = cv2.CascadeClassifier("./data/crosswalksXML/classifier/cascade.xml")
+    classifierSL = cv2.CascadeClassifier("./data/speedlimitXML/classifier/cascade.xml")
+    classifierST = cv2.CascadeClassifier("./data/stopXML/classifier/cascade.xml")
+    classifierTL = cv2.CascadeClassifier("./data/trafficlightsXML/classifier/cascade.xml")
     
     filepath = "./data/" + folder + "/"+ name
     image_to_compare_with = cv2.imread(filepath)
@@ -101,6 +112,9 @@ def classification_test(folder, name):
 #print(classification_test("test", "road5.png"))
 
 def test():
+    """
+    create the y_pred and y_test variables on the test dataset
+    """
     y_pred = []
     y_test = []
     print("load_annotations...")
@@ -115,6 +129,9 @@ def test():
 
 
 def results():
+    """
+    create confusion matrix and classification report
+    """
     y_pred, y_test = test()
 
     CM = confusion_matrix(y_test, y_pred)
@@ -128,19 +145,19 @@ def results():
 
 #results()
 
-### FULL IMPLEMENTATION
+### IMPLEMENTATION FROM SCRATCH
 
-#prendre photo
-#garder région d'intérêt
+#take a picture
+#keep only the interest region
 #resize 25x25
-#mettre en niveau de gris
-#mettre dans une variable images
+#set to grayscale
+#store in images variables
 
 images = []
 list_dir1 = os.listdir("./data/crosswalksXML/p")
 list_dir2 = os.listdir("./data/crosswalksXML/n_2")
-w = 30
-h = 30
+w = 25
+h = 25
 for name in list_dir1 :
     filepath = "./data/crosswalksXML/p/" + name
     image_to_compare_with = cv2.imread(filepath)

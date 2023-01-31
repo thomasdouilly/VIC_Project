@@ -1,3 +1,5 @@
+# This document is the beginning of the study of SURF algorithm, that we planned to do in the project proposal. We didn't succeed to do it with openCV, so we decided to concentrate on SIFT and Viola-Jones. Here is the beginning of our work.
+
 from sklearn import feature_extraction
 import time
 from sklearn.metrics import classification_report
